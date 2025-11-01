@@ -256,8 +256,8 @@ const QuizApp = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
             <div className="flex items-center gap-3 mb-6">
-              <BookOpen className="w-10 h-10 text-indigo-600" />
-              <h1 className="text-3xl font-bold text-gray-800">Подготовка к экзамену</h1>
+              {/* <BookOpen className="w-10 h-10 text-indigo-600" /> */}
+              <h1 className="text-3xl font-bold text-gray-800 px-1">Подготовка к экзамену</h1>
             </div>
             <p className="text-gray-600 mb-4">Выберите программу для начала подготовки</p>
             <p className="text-sm text-gray-500 mb-8">Всего вопросов в базе: {questions.length}</p>
@@ -266,7 +266,7 @@ const QuizApp = () => {
               <button
                 key={progId}
                 onClick={() => setSelectedProgram(progId)}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl p-6 mb-4 hover:from-indigo-600 hover:to-purple-700 transition-all transform hover:scale-105 flex items-center justify-between"
+                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl px-5 py-4 mb-4 hover:from-indigo-600 hover:to-purple-700 transition-all transform hover:scale-105 flex items-center justify-between"
               >
                 <span className="text-xl font-semibold">{progName}</span>
                 <ChevronRight className="w-6 h-6" />
@@ -300,7 +300,7 @@ const QuizApp = () => {
                   <button
                     key={zakonId}
                     onClick={() => setSelectedZakon(zakonId)}
-                    className="w-full bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-indigo-500 hover:shadow-lg transition-all text-left"
+                    className="w-full bg-white border-2 border-gray-200 rounded-xl px-5 py-4 hover:border-indigo-500 hover:shadow-lg transition-all text-left"
                   >
                     <div className="flex items-start justify-between">
                       <div>
@@ -344,7 +344,7 @@ const QuizApp = () => {
                   <button
                     key={blockId}
                     onClick={() => setSelectedBlock(blockId)}
-                    className="w-full bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-indigo-500 hover:shadow-lg transition-all text-left"
+                    className="w-full bg-white border-2 border-gray-200 rounded-xl px-5 py-4 hover:border-indigo-500 hover:shadow-lg transition-all text-left"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -396,7 +396,7 @@ const QuizApp = () => {
             </p>
 
             {currentStats.total > 0 && (
-              <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-6">
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl px-5 py-4 mb-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Ваша статистика</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
@@ -420,7 +420,7 @@ const QuizApp = () => {
             <div className="space-y-4">
               <button
                 onClick={() => startQuiz('all')}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl p-6 hover:from-indigo-600 hover:to-purple-700 transition-all"
+                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl px-5 py-4 hover:from-indigo-600 hover:to-purple-700 transition-all"
               >
                 <div className="flex items-center gap-4">
                   <Brain className="w-8 h-8" />
@@ -434,7 +434,7 @@ const QuizApp = () => {
               {currentStats.incorrectQuestions && currentStats.incorrectQuestions.length > 0 && (
                 <button
                   onClick={() => startQuiz('mistakes')}
-                  className="w-full bg-gradient-to-r from-red-500 to-orange-600 text-white rounded-xl p-6 hover:from-red-600 hover:to-orange-700 transition-all"
+                  className="w-full bg-gradient-to-r from-red-500 to-orange-600 text-white rounded-xl px-5 py-4 hover:from-red-600 hover:to-orange-700 transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <TrendingUp className="w-8 h-8" />
@@ -539,11 +539,11 @@ const QuizApp = () => {
             />
           </div>
 
-          <h3 className="text-2xl font-bold text-gray-800 mb-8">{currentQuestion.question}</h3>
+          <h3 className="text-xl font-bold text-gray-800 mb-8">{currentQuestion.question}</h3>
 
-          <div className="space-y-4 mb-8">
+          <div className="space-y-2 mb-8">
             {Object.entries(currentQuestion.answers).map(([answerId, answerText]) => {
-              let buttonClass = "w-full p-6 rounded-xl border-2 transition-all text-left ";
+              let buttonClass = "w-full px-5 py-4 rounded-xl border-2 transition-all text-left ";
 
               if (!showExplanation) {
                 buttonClass += selectedAnswer === answerId
@@ -567,7 +567,7 @@ const QuizApp = () => {
                   className={buttonClass}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-lg">{answerText}</span>
+                    <span className="text-sm">{answerText}</span>
                     {showExplanation && answerId === currentQuestion.correct_answer && (
                       <CheckCircle className="w-6 h-6 text-green-600" />
                     )}
@@ -581,7 +581,7 @@ const QuizApp = () => {
           </div>
 
           {showExplanation && (
-            <div className={`p-6 rounded-xl mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
+            <div className={`px-5 py-4 rounded-xl mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
               <div className="flex items-center gap-2 mb-2">
                 {isCorrect ? (
                   <>

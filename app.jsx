@@ -48,7 +48,7 @@ const QuizApp = () => {
     if (window.lucide) {
       window.lucide.createIcons();
     }
-  });
+  }, []); // Add empty dependency array
 
   const loadQuestions = async () => {
     try {
@@ -58,13 +58,13 @@ const QuizApp = () => {
         throw new Error('Failed to load questions');
       }
       const data = await response.json();
-      
+
       const processedData = data.map(q => ({
         ...q,
         block_id: q.block_id || '0',
         block_name: q.block_name || 'Основной блок'
       }));
-      
+
       setQuestions(processedData);
       setLoading(false);
     } catch (err) {
@@ -125,7 +125,7 @@ const QuizApp = () => {
   const getFilteredQuestions = () => {
     if (!selectedProgram || !selectedZakon || !selectedBlock) return [];
     const questions = structure[selectedProgram][selectedZakon].blocks[selectedBlock].questions;
-    
+
     if (quizMode === 'mistakes') {
       const key = `${selectedProgram}_${selectedZakon}_${selectedBlock}`;
       const blockStats = stats[key];
@@ -133,7 +133,7 @@ const QuizApp = () => {
         return questions.filter((_, idx) => blockStats.incorrectQuestions.includes(idx));
       }
     }
-    
+
     return questions;
   };
 
@@ -261,7 +261,7 @@ const QuizApp = () => {
             </div>
             <p className="text-gray-600 mb-4">Выберите программу для начала подготовки</p>
             <p className="text-sm text-gray-500 mb-8">Всего вопросов в базе: {questions.length}</p>
-            
+
             {Object.entries(programs).map(([progId, progName]) => (
               <button
                 key={progId}
@@ -286,16 +286,16 @@ const QuizApp = () => {
             <ChevronRight className="w-5 h-5 rotate-180" />
             Назад
           </button>
-          
+
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Выберите закон</h2>
-            
+
             <div className="space-y-4">
               {Object.entries(structure[selectedProgram]).map(([zakonId, zakonData]) => {
                 const totalQuestions = Object.values(zakonData.blocks).reduce(
                   (sum, block) => sum + block.questions.length, 0
                 );
-                
+
                 return (
                   <button
                     key={zakonId}
@@ -329,17 +329,17 @@ const QuizApp = () => {
             <ChevronRight className="w-5 h-5 rotate-180" />
             Назад
           </button>
-          
+
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">{structure[selectedProgram][selectedZakon].name}</h2>
             <p className="text-gray-600 mb-6">Выберите раздел для изучения</p>
-            
+
             <div className="space-y-4">
               {Object.entries(structure[selectedProgram][selectedZakon].blocks).map(([blockId, blockData]) => {
                 const key = `${selectedProgram}_${selectedZakon}_${blockId}`;
                 const blockStats = stats[key] || { correct: 0, total: 0 };
                 const accuracy = blockStats.total > 0 ? Math.round((blockStats.correct / blockStats.total) * 100) : 0;
-                
+
                 return (
                   <button
                     key={blockId}
@@ -353,7 +353,7 @@ const QuizApp = () => {
                       </div>
                       <ChevronRight className="w-6 h-6 text-gray-400 mt-1" />
                     </div>
-                    
+
                     {blockStats.total > 0 && (
                       <div className="flex items-center gap-4 text-sm">
                         <div className="flex items-center gap-1">
@@ -378,7 +378,7 @@ const QuizApp = () => {
   if (!quizMode) {
     const currentStats = getStatsForCurrentSelection();
     const accuracy = currentStats.total > 0 ? Math.round((currentStats.correct / currentStats.total) * 100) : 0;
-    
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
         <div className="max-w-4xl mx-auto">
@@ -386,7 +386,7 @@ const QuizApp = () => {
             <ChevronRight className="w-5 h-5 rotate-180" />
             Назад
           </button>
-          
+
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
               {structure[selectedProgram][selectedZakon].blocks[selectedBlock].name}
@@ -394,7 +394,7 @@ const QuizApp = () => {
             <p className="text-gray-600 mb-6">
               {structure[selectedProgram][selectedZakon].blocks[selectedBlock].questions.length} вопросов
             </p>
-            
+
             {currentStats.total > 0 && (
               <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Ваша статистика</h3>
@@ -416,7 +416,7 @@ const QuizApp = () => {
             )}
 
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Выберите режим</h3>
-            
+
             <div className="space-y-4">
               <button
                 onClick={() => startQuiz('all')}
@@ -458,22 +458,22 @@ const QuizApp = () => {
     const correctCount = userAnswers.filter(a => a.isCorrect).length;
     const totalCount = userAnswers.length;
     const percentage = Math.round((correctCount / totalCount) * 100);
-    
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <Award className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Тест завершен!</h2>
-            
+
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-8 mb-8">
               <div className="text-6xl font-bold text-indigo-600 mb-2">{percentage}%</div>
               <div className="text-xl text-gray-600 mb-4">
                 {correctCount} из {totalCount} правильных ответов
               </div>
-              
+
               <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                <div 
+                <div
                   className="bg-gradient-to-r from-green-500 to-blue-500 h-full transition-all duration-1000"
                   style={{ width: `${percentage}%` }}
                 />
@@ -503,7 +503,7 @@ const QuizApp = () => {
 
   const filteredQuestions = getFilteredQuestions();
   const currentQuestion = filteredQuestions[currentQuestionIndex];
-  
+
   if (!currentQuestion) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex items-center justify-center">
@@ -516,7 +516,7 @@ const QuizApp = () => {
       </div>
     );
   }
-  
+
   const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
   return (
@@ -533,7 +533,7 @@ const QuizApp = () => {
           </div>
 
           <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
-            <div 
+            <div
               className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%` }}
             />
@@ -544,7 +544,7 @@ const QuizApp = () => {
           <div className="space-y-4 mb-8">
             {Object.entries(currentQuestion.answers).map(([answerId, answerText]) => {
               let buttonClass = "w-full p-6 rounded-xl border-2 transition-all text-left ";
-              
+
               if (!showExplanation) {
                 buttonClass += selectedAnswer === answerId
                   ? "border-indigo-500 bg-indigo-50"
@@ -608,11 +608,10 @@ const QuizApp = () => {
               <button
                 onClick={handleSubmitAnswer}
                 disabled={!selectedAnswer}
-                className={`flex-1 py-4 rounded-xl font-semibold transition-all ${
-                  selectedAnswer
+                className={`flex-1 py-4 rounded-xl font-semibold transition-all ${selectedAnswer
                     ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 Ответить
               </button>

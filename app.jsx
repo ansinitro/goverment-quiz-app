@@ -1,5 +1,27 @@
 const { useState, useEffect } = React;
-const { BookOpen, Award, RotateCcw, CheckCircle, XCircle, ChevronRight, Menu, Target, Brain, TrendingUp, Loader } = lucide;
+
+// Lucide icons as React components
+const createIcon = (iconName) => {
+  return (props) => {
+    const { className = "w-6 h-6", ...rest } = props;
+    return React.createElement('i', {
+      'data-lucide': iconName,
+      className,
+      ...rest
+    });
+  };
+};
+
+const BookOpen = createIcon('book-open');
+const Award = createIcon('award');
+const RotateCcw = createIcon('rotate-ccw');
+const CheckCircle = createIcon('check-circle');
+const XCircle = createIcon('x-circle');
+const ChevronRight = createIcon('chevron-right');
+const Menu = createIcon('menu');
+const Target = createIcon('target');
+const Brain = createIcon('brain');
+const TrendingUp = createIcon('trending-up');
 
 const QuizApp = () => {
   const [questions, setQuestions] = useState([]);
@@ -16,11 +38,17 @@ const QuizApp = () => {
   const [showResults, setShowResults] = useState(false);
   const [stats, setStats] = useState({});
 
-  // Load questions from JSON file
   useEffect(() => {
     loadQuestions();
     loadStats();
   }, []);
+
+  useEffect(() => {
+    // Initialize Lucide icons after render
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  });
 
   const loadQuestions = async () => {
     try {
@@ -31,7 +59,6 @@ const QuizApp = () => {
       }
       const data = await response.json();
       
-      // Ensure each question has block_id and block_name
       const processedData = data.map(q => ({
         ...q,
         block_id: q.block_id || '0',
@@ -137,7 +164,6 @@ const QuizApp = () => {
 
     setShowExplanation(true);
 
-    // Update stats
     const key = `${selectedProgram}_${selectedZakon}_${selectedBlock}`;
     const newStats = { ...stats };
     if (!newStats[key]) {
@@ -146,7 +172,6 @@ const QuizApp = () => {
     newStats[key].total += 1;
     if (isCorrect) {
       newStats[key].correct += 1;
-      // Remove from incorrect questions if it was there
       newStats[key].incorrectQuestions = newStats[key].incorrectQuestions.filter(
         idx => idx !== currentQuestionIndex
       );
@@ -184,7 +209,6 @@ const QuizApp = () => {
     return stats[key] || { correct: 0, total: 0, incorrectQuestions: [] };
   };
 
-  // Loading screen
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -196,7 +220,6 @@ const QuizApp = () => {
     );
   }
 
-  // Error screen
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -215,7 +238,6 @@ const QuizApp = () => {
     );
   }
 
-  // No questions loaded
   if (questions.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -228,7 +250,6 @@ const QuizApp = () => {
     );
   }
 
-  // Selection Screen
   if (!selectedProgram) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -257,7 +278,6 @@ const QuizApp = () => {
     );
   }
 
-  // Zakon Selection
   if (!selectedZakon && selectedProgram) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -301,7 +321,6 @@ const QuizApp = () => {
     );
   }
 
-  // Block Selection
   if (!selectedBlock && selectedZakon) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -356,7 +375,6 @@ const QuizApp = () => {
     );
   }
 
-  // Quiz Mode Selection
   if (!quizMode) {
     const currentStats = getStatsForCurrentSelection();
     const accuracy = currentStats.total > 0 ? Math.round((currentStats.correct / currentStats.total) * 100) : 0;
@@ -436,7 +454,6 @@ const QuizApp = () => {
     );
   }
 
-  // Results Screen
   if (showResults) {
     const correctCount = userAnswers.filter(a => a.isCorrect).length;
     const totalCount = userAnswers.length;
@@ -484,7 +501,6 @@ const QuizApp = () => {
     );
   }
 
-  // Quiz Screen
   const filteredQuestions = getFilteredQuestions();
   const currentQuestion = filteredQuestions[currentQuestionIndex];
   
@@ -622,6 +638,5 @@ const QuizApp = () => {
   );
 };
 
-// Render the app
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<QuizApp />);
